@@ -10,7 +10,9 @@ export default function Navbar() {
   const handleCartClick = () => {
     navigate('/cart');
   };
-
+  const handleProfileClick = () => {
+    navigate('/profile');
+  };
   const handleLogout = () => {
     // You can add any logout logic here (like clearing tokens, etc.)
     navigate('/login');
@@ -59,7 +61,9 @@ export default function Navbar() {
               {/* Profile Dropdown */}
               {isProfileDropdownOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-100 py-2 z-50">
-                  <button className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+                  <button 
+                  onClick={handleProfileClick}
+                  className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
                     <User size={16} className="mr-3 text-gray-400" />
                     My Profile
                   </button>

@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Cart from './pages/Cart';
 import Deliver from './pages/Deliver';
+import VendorProfile from './VendorProfile';
 
 function AppContent() {
   const { pathname } = useLocation();
@@ -27,7 +28,7 @@ function AppContent() {
         <Route path="/cart" element={<Cart />} />
 
         <Route path="/delivery" element={<Deliver/>} />
-
+        <Route path="/profile" element={<VendorProfile />} />
       </Routes>
 
       {!hideLayout && <Footer />}
