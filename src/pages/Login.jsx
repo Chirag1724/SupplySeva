@@ -1,7 +1,35 @@
 import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [role, setRole] = useState("vendor");
+  const [emailOrPhone, setEmailOrPhone] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      const url = role === "vendor" ? "/api/vendor/login" : "/api/supplier/login";
+
+      const { data } = await axios.post(url, {
+        emailOrPhone,
+        password,
+      });
+
+      // Save token or session data if needed
+      console.log("Login Success:", data);
+
+      // Redirect based on role
+      if (role === "vendor") navigate("/vendor-dashboard");
+      else navigate("/supplier-dashboard");
+
+    } catch (error) {
+      console.error("Login Failed:", error.response?.data || error.message);
+      alert("Login failed. Check credentials.");
+    }
+  };
 
   return (
     <div className="flex h-screen">
@@ -46,15 +74,26 @@ export default function Login() {
         </div>
 
         {/* Form */}
-        <form className="space-y-4">
+        <form className="space-y-4" onSubmit={handleLogin}>
           <input
             type="text"
-            placeholder={role === "vendor" ? "Vendor Email or Phone" : "Supplier Email or Phone"}
+            value={emailOrPhone}
+            onChange={(e) => setEmailOrPhone(e.target.value)}
+            placeholder={
+              role === "vendor"
+                ? "Vendor Email or Phone"
+                : "Supplier Email or Phone"
+            }
+            required
             className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
           />
+
           <input
             type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             placeholder="Password"
+            required
             className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
           />
 
@@ -81,7 +120,6 @@ export default function Login() {
             <span className="mx-4 text-gray-400">OR</span>
             <hr className="flex-1" />
           </div>
-
         </form>
 
         <p className="text-center text-gray-500 mt-6">
