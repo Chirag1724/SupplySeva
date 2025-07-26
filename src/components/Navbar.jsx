@@ -11,8 +11,11 @@ export default function Navbar() {
     navigate('/cart');
   };
 
+  const handleOrdersClick = () => {
+    navigate('/orders');
+  };
+
   const handleLogout = () => {
-    // You can add any logout logic here (like clearing tokens, etc.)
     navigate('/login');
   };
 
@@ -64,7 +67,7 @@ export default function Navbar() {
                     My Profile
                   </button>
                   <button 
-                    onClick={handleCartClick}
+                    onClick={handleOrdersClick}
                     className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50"
                   >
                     <ShoppingCart size={16} className="mr-3 text-gray-400" />
@@ -127,7 +130,7 @@ export default function Navbar() {
               </button>
               
               <button 
-                onClick={handleCartClick}
+                onClick={handleOrdersClick}
                 className="flex items-center w-full p-3 text-gray-700 hover:bg-gray-50 rounded-xl"
               >
                 <ShoppingCart size={20} className="mr-3 text-gray-400" />
