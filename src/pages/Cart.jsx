@@ -34,7 +34,16 @@ export default function Cart() {
 
   const [promoCode, setPromoCode] = useState('');
   const [appliedPromo, setAppliedPromo] = useState(null);
-  const [isCheckingOut, setIsCheckingOut] = useState(false);
+
+  // Navigation function - replace with your routing solution
+  const navigate = (path) => {
+    // For React Router: use useNavigate() hook
+    // const navigate = useNavigate();
+    // navigate(path);
+    
+    // For demo purposes, we'll use window.location
+    window.location.href = path;
+  };
 
   const increaseQty = (id) => {
     setCartItems(prev =>
@@ -75,13 +84,14 @@ export default function Cart() {
   };
 
   const handleCheckout = () => {
-    setIsCheckingOut(true);
-    setTimeout(() => {
-      alert('Order placed successfully! Thank you for shopping with us.');
-      setCartItems([]);
-      setAppliedPromo(null);
-      setIsCheckingOut(false);
-    }, 2000);
+    // Navigate immediately to confirmation page, then clear cart
+    navigate('/confirmation');
+    setCartItems([]);
+    setAppliedPromo(null);
+  };
+
+  const handleContinueShopping = () => {
+    navigate('/');
   };
 
   const totalItems = cartItems.reduce((acc, item) => acc + item.quantity, 0);
@@ -105,7 +115,10 @@ export default function Cart() {
             <ShoppingCart className="mx-auto h-24 w-24 text-gray-300 mb-6" />
             <h2 className="text-2xl font-semibold text-gray-600 mb-4">Your cart is empty</h2>
             <p className="text-gray-500 mb-8">Looks like you haven't added anything to your cart yet.</p>
-            <button className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors">
+            <button 
+              onClick={handleContinueShopping}
+              className="px-8 py-3 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+            >
               Continue Shopping
             </button>
           </div>
@@ -296,24 +309,17 @@ export default function Cart() {
 
               <button
                 onClick={handleCheckout}
-                disabled={isCheckingOut}
-                className="w-full py-4 bg-green-600 hover:bg-green-700 disabled:bg-green-400 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 text-lg"
+                className="w-full py-4 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg transition-colors flex items-center justify-center gap-2 text-lg"
               >
-                {isCheckingOut ? (
-                  <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-2 border-white border-t-transparent"></div>
-                    Processing...
-                  </>
-                ) : (
-                  <>
-                    <ShoppingCart className="h-5 w-5" />
-                    Place Order
-                  </>
-                )}
+                <ShoppingCart className="h-5 w-5" />
+                Place Order
               </button>
 
               <div className="mt-4 text-center">
-                <button className="text-green-600 hover:text-green-700 font-medium underline">
+                <button 
+                  onClick={handleContinueShopping}
+                  className="text-green-600 hover:text-green-700 font-medium underline"
+                >
                   Continue Shopping
                 </button>
               </div>

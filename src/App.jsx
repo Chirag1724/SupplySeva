@@ -8,8 +8,15 @@ import Home from './pages/Home';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Cart from './pages/Cart';
-import Deliver from './pages/Deliver';
-import VendorProfile from './VendorProfile';
+
+import Delivery from './pages/Delivery';
+import Orders from './pages/Order';
+import Track from './pages/TrackOrder';
+import Product from './pages/Supplier/Product';
+import Profile from './pages/Profile';
+
+
+
 
 function AppContent() {
   const { pathname } = useLocation();
@@ -24,11 +31,15 @@ function AppContent() {
         <Route path="/product" element={<ProductDetails />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
-
         <Route path="/cart" element={<Cart />} />
 
-        <Route path="/delivery" element={<Deliver/>} />
-        <Route path="/profile" element={<VendorProfile />} />
+        <Route path="/confirmation" element={<Delivery />} />
+        <Route path="/orders" element={<Orders />} />
+        <Route path="/track" element={<Track />} />
+        <Route path="/productlist" element={<Product />} />
+        <Route path="/profile" element={<Profile />} />
+
+
       </Routes>
 
       {!hideLayout && <Footer />}
