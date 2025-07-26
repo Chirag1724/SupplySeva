@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -38,12 +39,12 @@ export default function Login() {
       <div className="w-1/2 h-screen bg-gray-100 flex items-center justify-center">
         <img
           src="/loginimg.png"
-          alt="Login Illustration"
-          className="max-w-md"
-        />
-      </div>
+
+
+
 
       {/* Right Form Section */}
+
       <div className="w-1/2 flex flex-col justify-center px-10">
         <h2 className="text-4xl font-bold mb-6 text-green-600">Login</h2>
         <form onSubmit={handleLogin} className="space-y-5">
@@ -104,6 +105,8 @@ export default function Login() {
             Login
           </button>
         </form>
+
+     
       </div>
     </div>
   );

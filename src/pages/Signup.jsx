@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -53,6 +54,9 @@ export default function Signup() {
     }
   };
 
+
+
+
   return (
     <div className="flex h-screen">
       {/* Left Image Section */}
@@ -72,6 +76,7 @@ export default function Signup() {
         </p>
 
         {/* Role Toggle */}
+
         <div className="flex gap-4 mb-6 bg-gray-100 p-1 rounded-full w-fit">
           <button
             onClick={() => setRole("vendor")}
@@ -151,10 +156,9 @@ export default function Signup() {
                 placeholder="Full Address"
                 value={formData.address}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
-                className="w-full border border-gray-400 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
-              />
-              <input
-                type="text"
+
+        
+
                 placeholder="FSSAI No."
                 value={formData.fssaiNumber}
                 onChange={(e) => setFormData({ ...formData, fssaiNumber: e.target.value })}
@@ -180,6 +184,74 @@ export default function Signup() {
                 />
               </div>
             </>
+
+              
+          ) : (
+           <>
+  <input
+    type="text"
+    placeholder="Supplier Name"
+    className="w-full border border-gray-400 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+  />
+  <input
+    type="text"
+    placeholder="Business Name"
+    className="w-full border border-gray-400 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+  />
+  <input
+    type="text"
+    placeholder="Phone Number"
+    className="w-full border border-gray-400 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+  />
+  <input
+    type="password"
+    placeholder="Password"
+    className="w-full border border-gray-400 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+  />
+  <div className="flex gap-4">
+    <input
+      type="text"
+      placeholder="City"
+      className="w-1/2 border border-gray-400 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+    />
+    <input
+      type="text"
+      placeholder="Pincode"
+      className="w-1/2 border border-gray-400 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+    />
+  </div>
+
+  {/* 🔥 New Address Field */}
+  <input
+    type="text"
+    placeholder="Full Address"
+    className="w-full border border-gray-400 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+  />
+
+  <input
+    type="text"
+    placeholder="FSSAI No."
+    className="w-full border border-gray-400 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
+  />
+  <div className="w-full">
+    <label
+      htmlFor="fssai"
+      className="block text-gray-700 border-gray-400 font-semibold mb-2"
+    >
+      Upload FSSAI Certificate
+    </label>
+    <input
+      id="fssai"
+      type="file"
+      className="w-full text-gray-700 bg-white border border-gray-400 rounded-lg cursor-pointer
+        px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400 file:mr-4 file:py-2 
+        file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold
+        file:bg-green-500 file:text-white hover:file:bg-green-600"
+    />
+  </div>
+</>
+
+
           )}
 
           <button
