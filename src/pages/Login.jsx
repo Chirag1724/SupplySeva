@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
@@ -15,17 +14,14 @@ export default function Login() {
     setError("");
 
     try {
-     const url = "http://localhost:5000/api/auth/login";
-
+      const url = "http://localhost:5000/api/auth/login";
       const { data } = await axios.post(url, {
         phone,
         password,
+        role,
       });
 
-      // You can store token or user data if returned by backend
       localStorage.setItem("user", JSON.stringify(data));
-
-      // Redirect to dashboard/home page after login
       navigate("/");
     } catch (err) {
       console.error(err);
@@ -39,12 +35,12 @@ export default function Login() {
       <div className="w-1/2 h-screen bg-gray-100 flex items-center justify-center">
         <img
           src="/loginimg.png"
-
-
-
+          alt="Login Visual"
+          className="max-w-md"
+        />
+      </div>
 
       {/* Right Form Section */}
-
       <div className="w-1/2 flex flex-col justify-center px-10">
         <h2 className="text-4xl font-bold mb-6 text-green-600">Login</h2>
         <form onSubmit={handleLogin} className="space-y-5">
@@ -74,7 +70,7 @@ export default function Login() {
             </button>
           </div>
 
-          {/* Phone */}
+          {/* Phone Input */}
           <input
             type="text"
             value={phone}
@@ -86,7 +82,7 @@ export default function Login() {
             className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
           />
 
-          {/* Password */}
+          {/* Password Input */}
           <input
             type="password"
             value={password}
@@ -96,8 +92,10 @@ export default function Login() {
             className="w-full border rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-green-400"
           />
 
+          {/* Error Message */}
           {error && <p className="text-red-500">{error}</p>}
 
+          {/* Submit Button */}
           <button
             type="submit"
             className="w-full bg-green-500 text-white py-2 rounded hover:bg-green-600"
@@ -105,8 +103,6 @@ export default function Login() {
             Login
           </button>
         </form>
-
-     
       </div>
     </div>
   );
