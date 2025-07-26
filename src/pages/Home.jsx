@@ -1,4 +1,5 @@
-import React from 'react';
+
+
 import Sidebar from '../../components/Sidebar';
 import { Search } from 'lucide-react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
@@ -28,10 +29,12 @@ const spices = [
   { name: 'Red Chili Powder', price: '₹220/kg', image: 'https://images.unsplash.com/photo-1702041295471-01b73fd39907?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8cmVkJTIwY2hpbGxpJTIwcG93ZGVyfGVufDB8fDB8fHww' },
   { name: 'Coriander Seeds', price: '₹160/kg', image: 'https://images.unsplash.com/photo-1508748169069-82590c9f26e6?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Y29yaWFuZGVyJTIwc2VlZHN8ZW58MHx8MHx8fDA%3D' },
   { name: 'Black Pepper', price: '₹500/kg', image: 'https://plus.unsplash.com/premium_photo-1726072357017-0af7b90a463d?q=80&w=1170&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D' },
+
 ];
 
 export default function Home() {
   return (
+
     
     <div className="flex min-h-screen bg-gray-50">
       <Sidebar />
@@ -46,6 +49,7 @@ export default function Home() {
                 <Search size={24}/>
         </span>
              </div>
+
 
         {/* Featured Products */}
         <Section title="Featured Products" products={featuredProducts} />
