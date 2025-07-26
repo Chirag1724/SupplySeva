@@ -1,6 +1,7 @@
-import React from "react";
-
+import React, {useState} from "react";
 export default function ProductDetails() {
+    const [activeTab, setActiveTab] = useState("description");
+
   return (
     <div className="max-w-7xl mx-auto p-6 bg-gray-50 min-h-screen">
       {/* Breadcrumb */}
@@ -49,31 +50,111 @@ export default function ProductDetails() {
 
       {/* Details & Specifications */}
       <div className="mt-12">
-        <h2 className="text-2xl font-semibold mb-4">Details & Specifications</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-y-3 text-gray-700 bg-white p-6 rounded-lg shadow">
-          <p><strong>Supplier:</strong> Spice Merchants Inc. (4.5 stars, 120 reviews)</p>
-          <p><strong>Availability:</strong> In Stock</p>
-          <p><strong>Available Quantity:</strong> 500 kg</p>
-          <p><strong>Product ID:</strong> CN-001</p>
-          <p><strong>Pack Size Options:</strong> 1kg, 5kg</p>
-          <p><strong>Delivery Time:</strong> 2-3 days</p>
-          <p><strong>Last Updated:</strong> 2024-01-15</p>
-          <p><strong>Supplier Rating:</strong> Spice Merchants Inc. logo</p>
-        </div>
+  <h2 className="text-2xl font-semibold mb-6">Details & Specifications</h2>
+  <div className="m-6 rounded-lg shadow p-6">
+    {/* Row 1 */}
+    <div className="flex justify-between py-4 border-b border-gray-300">
+      <div className="ml-28 ">
+        <p className="text-gray-500 mb-4 text-sm">Supplier:</p>
+        <p className="text-gray-800 font-medium">
+          Spice Merchants Inc. (4.5 stars, 120 reviews)
+        </p>
+      </div >
+      <div className="mr-56 ">
+        <p className="text-gray-500 mb-4 text-sm">Availability:</p>
+        <p className="text-gray-800 font-medium">In Stock</p>
+      </div>
+    </div>
+
+    {/* Row 2 */}
+    <div className="flex justify-between py-4 border-b border-gray-300">
+      <div className="ml-28 ">
+        <p className="text-gray-500  mb-4 text-sm">Available Quantity:</p>
+        <p className="text-gray-800 font-medium">500 kg</p>
+      </div>
+      <div className="mr-56 ">
+        <p className="text-gray-500 mb-4 text-sm">Product ID:</p>
+        <p className="text-gray-800 font-medium">CIN-001</p>
+      </div>
+    </div>
+
+    {/* Row 3 */}
+    <div className="flex justify-between py-4 border-b border-gray-300">
+      <div className="ml-28 ">
+        <p className="text-gray-500 mb-4 text-sm">Pack Size Options:</p>
+        <p className="text-gray-800 font-medium">1kg, 5kg</p>
+      </div>
+      <div className="mr-52 ">
+        <p className="text-gray-500 mb-4 text-sm">Delivery Time:</p>
+        <p className="text-gray-800 font-medium">2-3 days</p>
+      </div>
+    </div>
+
+    {/* Row 4 */}
+    <div className="flex justify-between py-4 ">
+      <div className="ml-28 ">
+        <p className="text-gray-500 mb-4 text-sm">Last Updated:</p>
+        <p className="text-gray-800 font-medium">2024-01-15</p>
+      </div>
+      <div className="mr-28 ">
+        <p className="text-gray-500 mb-4 text-sm">Supplier Rating:</p>
+        <p className="text-gray-800 font-medium">Spice Merchants Inc. logo</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+      <div className="mt-10">
+      {/* Tab Buttons */}
+      <div className="border-b flex gap-8 text-lg font-medium">
+        {[
+          { id: "description", label: "Description" },
+          { id: "supplier", label: "Supplier Info" },
+          { id: "nutrition", label: "Nutritional Info" },
+          { id: "reviews", label: "User Reviews" },
+        ].map((tab) => (
+          <button
+            key={tab.id}
+            onClick={() => setActiveTab(tab.id)}
+            className={`pb-2 transition ${
+              activeTab === tab.id
+                ? "border-b-2 border-green-500 text-green-600"
+                : "text-gray-500 hover:text-green-500"
+            }`}
+          >
+            {tab.label}
+          </button>
+        ))}
       </div>
 
-      {/* Tabs */}
-      <div className="mt-10">
-        <div className="border-b flex gap-8 text-lg font-medium">
-          <button className="border-b-2 border-green-500 text-green-600 pb-2">Description</button>
-          <button className="text-gray-500 pb-2 hover:text-green-500">Supplier Info</button>
-          <button className="text-gray-500 pb-2 hover:text-green-500">Nutritional Info</button>
-          <button className="text-gray-500 pb-2 hover:text-green-500">User Reviews</button>
-        </div>
-        <p className="text-gray-600 mt-6 leading-relaxed">
-          Our cinnamon sticks are sourced directly from the finest farms, ensuring the highest quality and aroma.
-        </p>
+      {/* Tab Content */}
+      <div className="mt-6 text-gray-600 leading-relaxed">
+        {activeTab === "description" && (
+          <p>
+            Our cinnamon sticks are sourced directly from the finest farms,
+            ensuring the highest quality and aroma.
+          </p>
+        )}
+        {activeTab === "supplier" && (
+          <p>
+            Supplier: Spice Merchants Inc. (4.5 stars, 120 reviews). Known for
+            quality and timely delivery.
+          </p>
+        )}
+        {activeTab === "nutrition" && (
+          <p>
+            Nutritional Info: Rich in antioxidants, zero trans fat, and great
+            for metabolism.
+          </p>
+        )}
+        {activeTab === "reviews" && (
+          <p>
+            User Reviews: “Amazing quality! Fresh and aromatic cinnamon sticks.”
+          </p>
+        )}
       </div>
+    </div>
 
       {/* Recommended Products */}
       <div className="mt-12">

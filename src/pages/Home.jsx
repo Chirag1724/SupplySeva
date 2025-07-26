@@ -1,9 +1,9 @@
 import React from 'react';
-import Sidebar from '../components/Sidebar';
+import Sidebar from '../../components/Sidebar';
 import { Search } from 'lucide-react';
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
+import Navbar from '../../components/Navbar';
+import Footer from '../../components/Footer';
 
 // Product arrays
 const featuredProducts = [
