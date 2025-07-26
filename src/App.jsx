@@ -33,6 +33,7 @@ function AppContent() {
         <Route path="/track" element={<Track />} />
         <Route path="/productlist" element={<Product />} />
         <Route path="/profile" element={<Profile />} />
+
       </Routes>
 
       {!hideLayout && <Footer />}
