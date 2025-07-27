@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { Search, Star, ChevronRight, Heart, ShoppingCart, Clock, Shield, Truck, Tag } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
+import { useCart } from '../pages/CartContext'; // ✅ Import useCart hook
+import Searchbar from '../components/SearchBar';
 
 export default function Home() {
   const [allProducts, setAllProducts] = useState({
@@ -11,7 +13,6 @@ export default function Home() {
     spices: []
   });
 
-  const [cartCount, setCartCount] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [showCartNotification, setShowCartNotification] = useState(false);
   const [timer, setTimer] = useState(3600);
@@ -24,6 +25,9 @@ export default function Home() {
   });
 
   const navigate = useNavigate();
+  
+  // ✅ Use CartContext instead of local state
+  const { cartItems, cartCount, addToCart, removeFromCart, updateCartItemQuantity, clearCart } = useCart();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,14 +35,16 @@ export default function Home() {
         const res = await axios.get("http://localhost:5000/api/products");
         const all = res.data.map(p => ({
           ...p,
-          id: p._id,
+          id: p._id, // ✅ Ensure consistent ID format
           image: `http://localhost:5000${p.imageUrl}`,
-          price: `₹${p.price}/kg`,
+          price: p.price, // ✅ Keep as number for calculations
+          priceDisplay: `₹${p.price}/kg`, // ✅ Separate display format
           originalPrice: `₹${Math.round(p.price * 1.2)}/kg`,
           discount: 100 - Math.round((p.price / (p.price * 1.2)) * 100),
           reviews: Math.floor(Math.random() * 200 + 20),
           rating: +(Math.random() * 1.5 + 3.5).toFixed(1),
           isFavorite: false,
+          unit: "kg", // ✅ Add unit for cart
         }));
 
         const featured = all.slice(0, 5);
@@ -56,7 +62,7 @@ export default function Home() {
 
   const applyFilters = (products) => {
     return products.filter(product => {
-      const priceNum = parseInt(product.price.replace(/[^0-9]/g, ''));
+      const priceNum = product.price; // ✅ Already a number
       const categoryMatch = filters.categories.length === 0 || filters.categories.includes(product.category);
       const priceMatch = priceNum >= filters.priceRange[0] && priceNum <= filters.priceRange[1];
       const availabilityMatch = filters.availability === 'all' ||
@@ -86,13 +92,31 @@ export default function Home() {
     });
   };
 
-  const addToCart = (product) => {
-    setCartCount(prev => prev + 1);
+  // ✅ Enhanced addToCart handler that matches ProductDetail logic
+  const handleAddToCart = (product) => {
+    console.log('Adding product to cart:', product);
+    
+    // ✅ Create cart-compatible product object (same format as ProductDetail)
+    const cartProduct = {
+      id: product.id,
+      name: product.name,
+      image: product.image,
+      price: product.price, // ✅ Already a number
+      unit: product.unit || "kg",
+      category: product.category,
+    };
+
+    addToCart(cartProduct);
+    
+    // Show notification
     setShowCartNotification(true);
     setTimeout(() => setShowCartNotification(false), 3000);
   };
 
-  const handleSearch = (e) => setSearchQuery(e.target.value);
+  const handleSearch = (query) => {
+    setSearchQuery(query);
+    console.log("Parent received search query:", query);
+  };
 
   const handleFilterChange = (newFilters) => setFilters(newFilters);
 
@@ -112,7 +136,14 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen bg-gray-50">
-      <Sidebar onFilterChange={handleFilterChange} cartCount={cartCount} />
+      <Sidebar 
+        onFilterChange={handleFilterChange} 
+        cartCount={cartCount}
+        cartItems={cartItems}
+        onRemoveFromCart={removeFromCart}
+        onUpdateQuantity={updateCartItemQuantity}
+        onClearCart={clearCart}
+      />
 
       {showCartNotification && (
         <div className="fixed top-20 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg z-50 animate-bounce">
@@ -121,10 +152,69 @@ export default function Home() {
       )}
 
       <main className="flex-1 p-6">
-        {/* ...search, banners, sections... */}
-        <Section title="Featured Products" products={filteredProducts.featured} onFavoriteToggle={toggleFavorite} onAddToCart={addToCart} category="featured" navigate={navigate} />
-        <Section title="Fresh Vegetables" products={filteredProducts.vegetables} onFavoriteToggle={toggleFavorite} onAddToCart={addToCart} category="vegetables" navigate={navigate} />
-        <Section title="Premium Spices" products={filteredProducts.spices} onFavoriteToggle={toggleFavorite} onAddToCart={addToCart} category="spices" navigate={navigate} />
+        <Searchbar onSearch={handleSearch} />
+        {/* Search Bar */}
+        
+
+        {/* Hero Section with Deal Timer */}
+        <div className="bg-gradient-to-r from-green-600 to-green-700 rounded-xl p-6 mb-8 text-white relative overflow-hidden">
+          <div className="absolute top-0 right-0 bg-yellow-400 text-green-800 px-3 py-1 text-sm font-bold rounded-bl-lg">
+            Limited Time Offer
+          </div>
+          <h1 className="text-2xl md:text-3xl font-bold mb-2">Farm Fresh Raw Materials</h1>
+          <p className="mb-4 max-w-lg">Direct from farm to your kitchen. High quality, organic produce at affordable prices.</p>
+          <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
+          </div>
+        </div>
+
+        {/* Value Propositions */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div className="bg-white p-4 rounded-lg shadow-sm flex items-center">
+            <Truck className="text-green-500 mr-3" size={20} />
+            <div>
+              <p className="text-xs text-gray-500">Delivery</p>
+              <p className="font-medium">Free above ₹500</p>
+            </div>
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow-sm flex items-center">
+            <Shield className="text-green-500 mr-3" size={20} />
+            <div>
+              <p className="text-xs text-gray-500">Quality</p>
+              <p className="font-medium">100% Organic</p>
+            </div>
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow-sm flex items-center">
+            <Tag className="text-green-500 mr-3" size={20} />
+            <div>
+              <p className="text-xs text-gray-500">Offers</p>
+              <p className="font-medium">Daily Discounts</p>
+            </div>
+          </div>
+          <div className="bg-white p-4 rounded-lg shadow-sm flex items-center">
+            <Clock className="text-green-500 mr-3" size={20} />
+            <div>
+              <p className="text-xs text-gray-500">Support</p>
+              <p className="font-medium">24/7 Available</p>
+            </div>
+          </div>
+        </div>
+
+        {/* Product Sections */}
+        <Section title="Featured Products" products={filteredProducts.featured} onFavoriteToggle={toggleFavorite} onAddToCart={handleAddToCart} category="featured" navigate={navigate} />
+        <Section title="Fresh Vegetables" products={filteredProducts.vegetables} onFavoriteToggle={toggleFavorite} onAddToCart={handleAddToCart} category="vegetables" navigate={navigate} />
+        <Section title="Premium Spices" products={filteredProducts.spices} onFavoriteToggle={toggleFavorite} onAddToCart={handleAddToCart} category="spices" navigate={navigate} />
+
+        {/* CTA Banner */}
+        <div className="bg-green-50 rounded-xl p-6 my-8 flex flex-col md:flex-row items-center justify-between border border-green-100">
+          <div>
+            <h2 className="text-xl font-bold text-green-800 mb-2">Need bulk quantities?</h2>
+            <p className="text-green-600">Special wholesale prices for restaurants and businesses</p>
+          </div>
+          <button className="mt-4 md:mt-0 bg-green-600 text-white px-6 py-2 rounded-lg font-medium hover:bg-green-700 transition flex items-center">
+            Contact Us <ChevronRight className="ml-1" size={18} />
+          </button>
+        </div>
+
       </main>
     </div>
   );
@@ -160,7 +250,7 @@ function Section({ title, products, onFavoriteToggle, onAddToCart, category, nav
 
 function ProductCard({
   name,
-  price,
+  priceDisplay,
   originalPrice,
   image,
   rating,
@@ -196,7 +286,7 @@ function ProductCard({
       <div className="p-4">
         <h3 className="font-semibold text-gray-800 mb-1 truncate">{name}</h3>
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-green-600 font-medium">{price}</span>
+          <span className="text-green-600 font-medium">{priceDisplay}</span>
           {originalPrice && <span className="text-gray-400 text-sm line-through">{originalPrice}</span>}
         </div>
         <div className="flex items-center mb-3">
