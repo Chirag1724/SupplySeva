@@ -4,18 +4,23 @@ import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-route
 
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import ProductDetails from './pages/ProjectDetails';
+import ProjectDetails from './pages/ProjectDetails';
 import Home from './pages/Home';
-
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Cart from './pages/Cart';
 import Delivery from './pages/Delivery';
-import Orders from './pages/Order';
-import Track from './pages/TrackOrder';
-import Product from './pages/Supplier/Product';
+import Order from './pages/Order';
+import TrackOrder from './pages/TrackOrder';
 import Profile from './pages/Profile';
-import RegisterProducts from './pages/Supplier/RegisterProducts';
+
+// Supplier pages
+import SDashboard from './pages/Supplier/SDashboard';
+import SInventry from './pages/Supplier/SInventry';
+import SNewProduct from './pages/Supplier/SNewProduct';
+import SOrder from './pages/Supplier/SOrder';
+import SProfile from './pages/Supplier/SProfile';
+
 import PrivateRoute from './components/PrivateRoute';
 import RoleBasedRoute from './components/RoleBasedRoute';
 
@@ -28,7 +33,7 @@ function AppContent() {
       {!hideLayout && <Navbar />}
 
       <Routes>
-        {/* Public */}
+        {/* Public Routes */}
         <Route path="/" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
 
@@ -50,7 +55,7 @@ function AppContent() {
           }
         />
         <Route
-          path="/confirmation"
+          path="/delivery"
           element={
             <RoleBasedRoute allowedRole="vendor">
               <Delivery />
@@ -61,15 +66,15 @@ function AppContent() {
           path="/orders"
           element={
             <RoleBasedRoute allowedRole="vendor">
-              <Orders />
+              <Order />
             </RoleBasedRoute>
           }
         />
         <Route
-          path="/track"
+          path="/track-order"
           element={
             <RoleBasedRoute allowedRole="vendor">
-              <Track />
+              <TrackOrder />
             </RoleBasedRoute>
           }
         />
@@ -77,31 +82,55 @@ function AppContent() {
           path="/product/:id"
           element={
             <RoleBasedRoute allowedRole="vendor">
-              <ProductDetails />
+              <ProjectDetails />
             </RoleBasedRoute>
           }
         />
+
 
         {/* Supplier-only pages */}
-       
         <Route
-          path="/productlist"
+          path="/supplier/dashboard"
           element={
             <RoleBasedRoute allowedRole="supplier">
-              <Product />
+              <SDashboard />
             </RoleBasedRoute>
           }
         />
         <Route
-          path="/add-product"
+          path="/supplier/inventory"
           element={
             <RoleBasedRoute allowedRole="supplier">
-              <RegisterProducts />
+              <SInventry />
+            </RoleBasedRoute>
+          }
+        />
+        <Route
+          path="/supplier/new-product"
+          element={
+            <RoleBasedRoute allowedRole="supplier">
+              <SNewProduct />
+            </RoleBasedRoute>
+          }
+        />
+        <Route
+          path="/supplier/orders"
+          element={
+            <RoleBasedRoute allowedRole="supplier">
+              <SOrder />
+            </RoleBasedRoute>
+          }
+        />
+        <Route
+          path="/supplier/profile"
+          element={
+            <RoleBasedRoute allowedRole="supplier">
+              <SProfile />
             </RoleBasedRoute>
           }
         />
 
-        {/* Common */}
+        {/* Common Protected Routes */}
         <Route
           path="/profile"
           element={

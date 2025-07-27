@@ -31,7 +31,7 @@ console.log("Role:", user.role);
       if (user.role === "vendor") {
         navigate("/home");
       } else if (user.role === "supplier") {
-        navigate("/productlist");
+        navigate("/supplier/dashboard");
       }
 
       window.alert("Login successful!");
