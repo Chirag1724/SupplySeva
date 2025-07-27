@@ -50,7 +50,7 @@ export default function Products() {
 
   const fetchProducts = async () => {
     try {
-      const res = await axios.get("http://localhost:5000/api/products");
+      const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/products`);
       setProducts(res.data);
     } catch (err) {
       console.error("Error fetching products:", err.message);
@@ -60,7 +60,7 @@ export default function Products() {
   const deleteProduct = async (id) => {
     if (window.confirm("Are you sure you want to delete this product?")) {
       try {
-        await axios.delete(`http://localhost:5000/api/products/${id}`);
+        await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/products/${id}`);
         setProducts(prev => prev.filter(p => p._id !== id));
       } catch (err) {
         console.error("Error deleting product:", err.message);
@@ -76,7 +76,7 @@ export default function Products() {
   const handleEditSubmit = async () => {
     if (editProduct) {
       try {
-        await axios.put(`http://localhost:5000/api/products/${editProduct._id}`, editProduct);
+        await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/products/${editProduct._id}`, editProduct);
         const updatedProducts = products.map(product => 
           product._id === editProduct._id ? editProduct : product
         );
@@ -320,7 +320,7 @@ export default function Products() {
                           <div className="flex items-center">
                             <div className="w-12 h-12 bg-gray-200 rounded-lg overflow-hidden mr-3">
                               <img 
-                                src={`http://localhost:5000${product.imageUrl}`} 
+                                src={`${import.meta.env.VITE_API_BASE_URL}${product.imageUrl}`} 
                                 alt={product.name}
                                 className="w-full h-full object-cover"
                                 onError={(e) => {

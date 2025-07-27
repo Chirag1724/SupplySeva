@@ -32,11 +32,11 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get("http://localhost:5000/api/products");
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/products`);
         const all = res.data.map(p => ({
           ...p,
           id: p._id, // ✅ Ensure consistent ID format
-          image: `http://localhost:5000${p.imageUrl}`,
+          image: `${import.meta.env.VITE_API_BASE_URL}${p.imageUrl}`,
           price: p.price, // ✅ Keep as number for calculations
           priceDisplay: `₹${p.price}/kg`, // ✅ Separate display format
           originalPrice: `₹${Math.round(p.price * 1.2)}/kg`,

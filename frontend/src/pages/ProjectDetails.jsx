@@ -30,7 +30,7 @@ export default function ProductDetail() {
 
   const transformProduct = (p) => ({
     ...p,
-    image: `http://localhost:5000${p.imageUrl}`,
+    image: `${import.meta.env.VITE_API_BASE_URL}${p.imageUrl}`,
     price: `₹${p.price}/kg`,
     originalPrice: `₹${Math.round(p.price * 1.2)}/kg`,
     discount: 100 - Math.round((p.price / (p.price * 1.2)) * 100),
@@ -41,7 +41,7 @@ export default function ProductDetail() {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/products/${id}`);
+        const res = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/products/${id}`);
         const transformed = transformProduct(res.data);
         setProduct(transformed);
       } catch (err) {
