@@ -1,64 +1,45 @@
-import React, { useState } from 'react';
-import { Package, Search, Filter, Clock, CheckCircle, Truck, RotateCcw } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import {
+  Package,
+  Search,
+  Filter,
+  Clock,
+  CheckCircle,
+  Truck,
+  RotateCcw
+} from 'lucide-react';
 
 const OrdersPage = () => {
+  const [orders, setOrders] = useState([]);
   const [activeTab, setActiveTab] = useState('All');
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedDateRange, setSelectedDateRange] = useState('');
+  const [loading, setLoading] = useState(true);
 
-  // Sample orders data
-  const orders = [
-    {
-      id: '#YZ3456',
-      supplier: 'Fresh Farms',
-      orderDate: '2024-07-20',
-      deliveryEstimate: '2024-07-22',
-      status: 'delivered',
-      logo: 'fresh-farms',
-      items: ['Organic Tomatoes', 'Fresh Lettuce', 'Green Peppers'],
-      total: '$45.50'
-    },
-    {
-      id: '#AB9012',
-      supplier: 'Spice Merchants',
-      orderDate: '2024-07-18',
-      deliveryEstimate: '2024-07-17',
-      status: 'shipped',
-      logo: 'spice-merchants',
-      items: ['Turmeric Powder', 'Cumin Seeds', 'Black Pepper'],
-      total: '$28.75'
-    },
-    {
-      id: '#CD5678',
-      supplier: 'Dairy Delights',
-      orderDate: '2024-07-10',
-      deliveryEstimate: '2024-07-12',
-      status: 'delivered',
-      logo: 'dairy-delights',
-      items: ['Organic Milk', 'Greek Yogurt', 'Aged Cheddar'],
-      total: '$32.20'
-    },
-    {
-      id: '#EF1234',
-      supplier: 'Bakery Bliss',
-      orderDate: '2024-07-05',
-      deliveryEstimate: '2024-07-07',
-      status: 'delivered',
-      logo: 'bakery-bliss',
-      items: ['Sourdough Bread', 'Croissants', 'Chocolate Muffins'],
-      total: '$19.95'
-    },
-    {
-      id: '#GH7890',
-      supplier: 'Meat Masters',
-      orderDate: '2024-06-30',
-      deliveryEstimate: '2024-07-02',
-      status: 'delivered',
-      logo: 'meat-masters',
-      items: ['Premium Beef', 'Chicken Breast', 'Lamb Chops'],
-      total: '$89.40'
+  useEffect(() => {
+  const fetchOrders = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      const response = await axios.get("http://localhost:5000/api/orders", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      console.log("Orders:", response.data);
+      setOrders(response.data);        // ✅ Save orders to state
+      setLoading(false);               // ✅ Turn off loading
+    } catch (error) {
+      console.error("Failed to fetch orders:", error.message);
+      setLoading(false);
     }
-  ];
+  };
+
+  fetchOrders();
+}, []);
+
 
   const getStatusIcon = (status) => {
     switch (status) {
@@ -86,39 +67,44 @@ const OrdersPage = () => {
     }
   };
 
-  const getSupplierLogo = (logo) => {
-    const logoColors = {
-      'fresh-farms': 'bg-green-600',
-      'spice-merchants': 'bg-yellow-600',
-      'dairy-delights': 'bg-blue-400',
-      'bakery-bliss': 'bg-orange-500',
-      'meat-masters': 'bg-gray-600'
-    };
-
-    const logoNames = {
-      'fresh-farms': 'Fresh Farms',
-      'spice-merchants': 'Spice Merchants',
-      'dairy-delights': 'Dairy Delights',
-      'bakery-bliss': 'Bakery Bliss',
-      'meat-masters': 'Meat Masters'
-    };
-
+  const getSupplierLogo = (name = '') => {
+    const initials = name.split(' ').map((word) => word[0]).join('');
+    const colorClass = 'bg-gray-600'; // You can make this dynamic later
     return (
-      <div className={`w-16 h-10 rounded-lg ${logoColors[logo]} flex items-center justify-center text-white text-xs font-semibold`}>
-        {logoNames[logo].split(' ').map(word => word[0]).join('')}
+      <div className={`w-16 h-10 rounded-lg ${colorClass} flex items-center justify-center text-white text-xs font-semibold`}>
+        {initials}
       </div>
     );
   };
 
   const handleRepeatOrder = (order) => {
-    alert(`Repeating order ${order.id} from ${order.supplier}\nItems: ${order.items.join(', ')}\nTotal: ${order.total}`);
+    alert(`Repeating order ${order._id} from ${order.supplier}\nItems: ${order.items.join(', ')}\nTotal: ${order.total}`);
   };
 
-  const filteredOrders = orders.filter(order => {
-    const matchesSearch = order.supplier.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         order.id.toLowerCase().includes(searchTerm.toLowerCase());
-    const matchesTab = activeTab === 'All' || order.status === activeTab.toLowerCase();
-    return matchesSearch && matchesTab;
+  const filterByDateRange = (orderDateStr) => {
+    const orderDate = new Date(orderDateStr);
+    const today = new Date();
+
+    switch (selectedDateRange) {
+      case 'last-week':
+        return orderDate >= new Date(today.setDate(today.getDate() - 7));
+      case 'last-month':
+        return orderDate >= new Date(today.setMonth(today.getMonth() - 1));
+      case 'last-3-months':
+        return orderDate >= new Date(today.setMonth(today.getMonth() - 3));
+      default:
+        return true;
+    }
+  };
+
+  const filteredOrders = orders.filter((order) => {
+    const matchesSearch =
+      order.supplier?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order._id?.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesTab =
+      activeTab === 'All' || order.status?.toLowerCase() === activeTab.toLowerCase();
+    const matchesDate = filterByDateRange(order.orderDate);
+    return matchesSearch && matchesTab && matchesDate;
   });
 
   return (
@@ -179,68 +165,81 @@ const OrdersPage = () => {
       </div>
 
       {/* Orders List */}
-      <div className="space-y-4">
-        {filteredOrders.map((order) => (
-          <div key={order.id} className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow">
-            <div className="p-6">
-              <div className="flex items-start justify-between">
-                {/* Left side - Order info */}
-                <div className="flex-1">
-                  <div className="flex items-center gap-4 mb-4">
-                    {getSupplierLogo(order.logo)}
-                    <div>
-                      <div className="flex items-center gap-3 mb-1">
-                        <span className="text-sm font-medium text-blue-600">{order.id}</span>
-                        <div className={`px-2 py-1 rounded-full text-xs font-medium capitalize ${getStatusColor(order.status)} flex items-center gap-1`}>
-                          {getStatusIcon(order.status)}
-                          {order.status}
+      {loading ? (
+        <p className="text-center text-gray-500">Loading orders...</p>
+      ) : (
+        <div className="space-y-4">
+          {filteredOrders.map((order) => (
+            <div
+              key={order._id}
+              className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden hover:shadow-md transition-shadow"
+            >
+              <div className="p-6">
+                <div className="flex items-start justify-between">
+                  <div className="flex-1">
+                    <div className="flex items-center gap-4 mb-4">
+                      {getSupplierLogo(order.supplier)}
+                      <div>
+                        <div className="flex items-center gap-3 mb-1">
+                          <span className="text-sm font-medium text-blue-600">{order._id}</span>
+                          <div
+                            className={`px-2 py-1 rounded-full text-xs font-medium capitalize ${getStatusColor(
+                              order.status
+                            )} flex items-center gap-1`}
+                          >
+                            {getStatusIcon(order.status)}
+                            {order.status}
+                          </div>
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 mb-1">{order.supplier}</h3>
+                        <div className="text-sm text-gray-600">
+                          <p>Order Date: {new Date(order.orderDate).toLocaleDateString()}</p>
+                          <p>Delivery Estimate: {new Date(order.deliveryEstimate).toLocaleDateString()}</p>
                         </div>
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 mb-1">{order.supplier}</h3>
-                      <div className="text-sm text-gray-600">
-                        <p>Order Date: {new Date(order.orderDate).toLocaleDateString()}</p>
-                        <p>Delivery Estimate: {new Date(order.deliveryEstimate).toLocaleDateString()}</p>
+                    </div>
+
+                    {/* Order items */}
+                    <div className="mb-4">
+                      <p className="text-sm text-gray-600 mb-2">Items:</p>
+                      <div className="flex flex-wrap gap-2">
+                        {(order.items || []).map((item, index) => (
+                          <span
+                            key={index}
+                            className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full"
+                          >
+                            {item}
+                          </span>
+                        ))}
                       </div>
                     </div>
-                  </div>
 
-                  {/* Order items */}
-                  <div className="mb-4">
-                    <p className="text-sm text-gray-600 mb-2">Items:</p>
-                    <div className="flex flex-wrap gap-2">
-                      {order.items.map((item, index) => (
-                        <span key={index} className="px-3 py-1 bg-gray-100 text-gray-700 text-sm rounded-full">
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg font-semibold text-gray-900">{order.total}</span>
-                    <div className="flex gap-3">
-                      <button
-                        onClick={() => handleRepeatOrder(order)}
-                        className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
-                      >
-                        <RotateCcw className="w-4 h-4" />
-                        Repeat Order
-                      </button>
-                      <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
-                        <Package className="w-4 h-4" />
-                        Track Order
-                      </button>
+                    <div className="flex items-center justify-between">
+                      <span className="text-lg font-semibold text-gray-900">{order.total}</span>
+                      <div className="flex gap-3">
+                        <button
+                          onClick={() => handleRepeatOrder(order)}
+                          className="flex items-center gap-2 px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-sm font-medium"
+                        >
+                          <RotateCcw className="w-4 h-4" />
+                          Repeat Order
+                        </button>
+                        <button className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors text-sm font-medium">
+                          <Package className="w-4 h-4" />
+                          Track Order
+                        </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
 
-      {/* Empty state */}
-      {filteredOrders.length === 0 && (
+      {/* Empty State */}
+      {!loading && filteredOrders.length === 0 && (
         <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-12 text-center">
           <Package className="w-12 h-12 text-gray-400 mx-auto mb-4" />
           <h3 className="text-lg font-medium text-gray-900 mb-2">No orders found</h3>
