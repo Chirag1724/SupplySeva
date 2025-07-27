@@ -22,21 +22,21 @@ export default function Deliver() {
   const { cartItems, clearCart } = useCart();
 
   const totalAmount = cartItems.reduce(
-    (total, item) => total + item.price * item.quantity,
+    (total, item) => total + Number(item.price) * item.quantity,
     0
   );
 
   const handleConfirmOrder = async () => {
     const orderPayload = {
       items: cartItems.map((item) => ({
-        productId: item._id,
+        name: item.name,
         quantity: item.quantity,
-        price: item.price,
+        price: Number(item.price),
       })),
       deliveryTime: anytimeDelivery ? "Anytime" : selectedSlot,
       instructions: specialInstructions || "None",
       address: "The Spice Merchant, 123 Market Road, Colaba, Mumbai",
-      totalAmount,
+      totalAmount: Number(totalAmount),
     };
 
     try {
@@ -48,8 +48,8 @@ export default function Deliver() {
       setError(null);
       clearCart();
     } catch (err) {
-      setError("Order placement failed");
-      console.error("Order placement failed:", err);
+      console.error("Order placement failed:", err.response?.data || err.message);
+      setError("Order placement failed: " + (err.response?.data?.message || err.message));
     }
   };
 
@@ -143,7 +143,12 @@ export default function Deliver() {
 
       <button
         onClick={handleConfirmOrder}
-        className="w-full py-3 bg-green-600 text-white rounded hover:bg-green-700 transition"
+        disabled={cartItems.length === 0}
+        className={`w-full py-3 rounded text-white transition ${
+          cartItems.length === 0
+            ? "bg-gray-400 cursor-not-allowed"
+            : "bg-green-600 hover:bg-green-700"
+        }`}
       >
         Confirm Order
       </button>
