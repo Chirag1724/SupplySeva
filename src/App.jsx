@@ -14,6 +14,7 @@ import Orders from './pages/Order';
 import Track from './pages/TrackOrder';
 import Product from './pages/Supplier/Product';
 import Profile from './pages/Profile';
+import RegisterProducts from './pages/Supplier/RegisterProducts';
 
 
 
@@ -28,7 +29,7 @@ function AppContent() {
 
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/product" element={<ProductDetails />} />
+        <Route path="/product/:id" element={<ProductDetails />} />
         <Route path="/login" element={<Login />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/cart" element={<Cart />} />
@@ -38,7 +39,8 @@ function AppContent() {
         <Route path="/track" element={<Track />} />
         <Route path="/productlist" element={<Product />} />
         <Route path="/profile" element={<Profile />} />
-
+        <Route path="/add-product" element={<RegisterProducts/>} />
+       
 
       </Routes>
 
