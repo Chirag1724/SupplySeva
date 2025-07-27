@@ -13,6 +13,7 @@ import Delivery from './pages/Delivery';
 import Order from './pages/Order';
 import TrackOrder from './pages/TrackOrder';
 import Profile from './pages/Profile';
+import MandiChart from './pages/MandiChart';
 
 // Supplier pages
 import SDashboard from './pages/Supplier/SDashboard';
@@ -83,6 +84,14 @@ function AppContent() {
           element={
             <RoleBasedRoute allowedRole="vendor">
               <ProjectDetails />
+            </RoleBasedRoute>
+          }
+        />
+         <Route
+          path="/mandi-chart"
+          element={
+            <RoleBasedRoute allowedRole="vendor">
+              <MandiChart />
             </RoleBasedRoute>
           }
         />
