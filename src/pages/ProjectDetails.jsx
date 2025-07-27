@@ -58,6 +58,7 @@ export default function ProductDetail() {
 
   // ✅ prepare cart-compatible product object
   const handleAddToCart = () => {
+    console.log("Product being added to cart:", product);
     addToCart({
       id: product._id,
       name: product.name,
@@ -65,7 +66,14 @@ export default function ProductDetail() {
       price: parseFloat(product.price.replace(/[₹\/kg]/g, '')),
       unit: "kg",
       category: "Fruits",
+      supplierId: product.supplierId,
     });
+
+
+
+
+
+
   };
 
   return (

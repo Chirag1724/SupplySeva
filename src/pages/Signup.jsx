@@ -1,7 +1,8 @@
 import React, { useState } from "react";
 import axios from "axios";
-
+import { useNavigate } from "react-router-dom";
 export default function Signup() {
+  const navigate = useNavigate();
   const [role, setRole] = useState("vendor"); // default role
   const [formData, setFormData] = useState({
     name: "",
@@ -57,7 +58,7 @@ export default function Signup() {
         fssaiCertificate: null,
       });
       setRole("vendor");
-
+      navigate("/"); // Redirect to login after signup
       // Optional: redirect to login
       // window.location.href = "/login";
     } catch (error) {
@@ -360,7 +361,7 @@ export default function Signup() {
 
             <div className="text-center pt-4">
               <span className="text-gray-600">Already have an account? </span>
-              <a href="/login" className="text-green-500 font-semibold hover:text-green-600 transition-colors">
+              <a href="/" className="text-green-500 font-semibold hover:text-green-600 transition-colors">
                 Log In
               </a>
             </div>

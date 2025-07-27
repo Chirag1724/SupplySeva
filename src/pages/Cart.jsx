@@ -8,12 +8,14 @@ export default function Cart() {
   const navigate = useNavigate(); // 👈
 
   const increaseQty = (id) => {
-    const item = cartItems.find((item) => item.id === id);
+    const item = cartItems.find((item) => item._id === id || item.id === id);
+
     updateQty(id, item.quantity + 1);
   };
 
   const decreaseQty = (id) => {
-    const item = cartItems.find((item) => item.id === id);
+   const item = cartItems.find((item) => item._id === id || item.id === id);
+
     if (item.quantity > 1) updateQty(id, item.quantity - 1);
   };
 
@@ -40,7 +42,8 @@ export default function Cart() {
           <div className="md:col-span-2 space-y-6">
             {cartItems.map((item) => (
               <div
-                key={item.id}
+                key={item._id || item.id || `${item.name}-${item.price}`}
+
                 className="flex items-center justify-between border-b pb-4"
               >
                 <div className="flex items-center gap-4">

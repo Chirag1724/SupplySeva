@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+
 export default function RegisterProducts() {
   const [formData, setFormData] = useState({
     name: '',
@@ -31,32 +32,44 @@ export default function RegisterProducts() {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
+    e.preventDefault();
 
-  try {
-    const form = new FormData();
-    form.append('name', formData.name);
-    form.append('description', formData.description);
-    form.append('price', formData.price);
-    form.append('stock', formData.stock);
-    form.append('category', formData.category);
-    if (formData.image) {
-      form.append('image', formData.image);
+    try {
+      const form = new FormData();
+      form.append('name', formData.name);
+      form.append('description', formData.description);
+      form.append('price', formData.price);
+      form.append('stock', formData.stock);
+      form.append('category', formData.category);
+      if (formData.image) {
+        form.append('image', formData.image);
+      }
+
+      const user = JSON.parse(localStorage.getItem("user"));
+console.log("🟡 USER FROM STORAGE:", user);
+
+if (!user || !user._id) {
+  alert("User not logged in");
+  return;
+}
+
+form.append("creatorId", user._id);
+form.append("creatorRole", user.role);
+
+
+      const res = await axios.post('http://localhost:5000/api/products/add', form, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      console.log('✅ Product added:', res.data);
+      navigate('/productlist');
+    } catch (err) {
+      console.error('❌ Error adding product:', err);
+      alert('Failed to add product');
     }
-
-    const res = await axios.post('http://localhost:5000/api/products/add', form, {
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
-
-    console.log('✅ Product added:', res.data);
-    navigate('/productlist');
-  } catch (err) {
-    console.error('❌ Error adding product:', err);
-    alert('Failed to add product');
-  }
-};
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 p-8">
