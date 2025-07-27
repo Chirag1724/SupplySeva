@@ -10,7 +10,7 @@ import {
   CheckCircle,
   X,
 } from "lucide-react";
-import { useCart } from "../pages/CartContext"; // ✅ Correct usage
+import { useCart } from "../pages/CartContext";
 
 export default function Deliver() {
   const [selectedSlot, setSelectedSlot] = useState("2-4 PM");
@@ -19,28 +19,17 @@ export default function Deliver() {
   const [orderSuccess, setOrderSuccess] = useState(false);
   const [error, setError] = useState(null);
 
-  const { cartItems, clearCart } = useCart(); // ✅ Get cartItems and clearCart
+  const { cartItems, clearCart } = useCart();
 
-  // ✅ Calculate total from cart items
   const totalAmount = cartItems.reduce(
     (total, item) => total + item.price * item.quantity,
     0
   );
 
-  const handleSlotChange = (slot) => {
-    setSelectedSlot(slot);
-    setAnytimeDelivery(false);
-  };
-
-  const handleAnytimeToggle = () => {
-    setAnytimeDelivery(!anytimeDelivery);
-  };
-
   const handleConfirmOrder = async () => {
     const orderPayload = {
       items: cartItems.map((item) => ({
         productId: item._id,
-        
         quantity: item.quantity,
         price: item.price,
       })),
@@ -57,8 +46,7 @@ export default function Deliver() {
       );
       setOrderSuccess(true);
       setError(null);
-      clearCart(); // ✅ Clear cart after success
-      console.log("Order placed successfully:", response.data);
+      clearCart();
     } catch (err) {
       setError("Order placement failed");
       console.error("Order placement failed:", err);
@@ -69,7 +57,6 @@ export default function Deliver() {
     <div className="max-w-4xl mx-auto p-4">
       <h2 className="text-2xl font-semibold mb-4">Delivery Details</h2>
 
-      {/* Delivery Address */}
       <div className="border p-4 rounded-lg shadow-sm mb-4">
         <div className="flex items-center mb-2">
           <MapPin className="mr-2 text-gray-600" />
@@ -80,7 +67,6 @@ export default function Deliver() {
         </p>
       </div>
 
-      {/* Delivery Slot */}
       <div className="border p-4 rounded-lg shadow-sm mb-4">
         <div className="flex items-center mb-2">
           <Clock className="mr-2 text-gray-600" />
@@ -95,7 +81,10 @@ export default function Deliver() {
                   ? "border-green-500 bg-green-50"
                   : "border-gray-300"
               }`}
-              onClick={() => handleSlotChange(slot)}
+              onClick={() => {
+                setSelectedSlot(slot);
+                setAnytimeDelivery(false);
+              }}
             >
               {slot}
             </div>
@@ -104,14 +93,13 @@ export default function Deliver() {
             <input
               type="checkbox"
               checked={anytimeDelivery}
-              onChange={handleAnytimeToggle}
+              onChange={() => setAnytimeDelivery(!anytimeDelivery)}
             />
             <label>Anytime Delivery</label>
           </div>
         </div>
       </div>
 
-      {/* Special Instructions */}
       <div className="border p-4 rounded-lg shadow-sm mb-4">
         <div className="flex items-center mb-2">
           <Edit3 className="mr-2 text-gray-600" />
@@ -126,7 +114,6 @@ export default function Deliver() {
         ></textarea>
       </div>
 
-      {/* Order Summary */}
       <div className="border p-4 rounded-lg shadow-sm mb-4">
         <div className="flex items-center justify-between mb-2">
           <div className="flex items-center">
@@ -136,15 +123,14 @@ export default function Deliver() {
           <span className="font-medium">{cartItems.length} items</span>
         </div>
         <ul className="ml-6 list-disc">
-          {cartItems.map((item) => (
-            <li key={item._id}>
+          {cartItems.map((item, index) => (
+            <li key={item._id || index}>
               {item.name} - {item.quantity} x ₹{item.price}
             </li>
           ))}
         </ul>
       </div>
 
-      {/* Total Amount */}
       <div className="border p-4 rounded-lg shadow-sm mb-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
@@ -155,7 +141,6 @@ export default function Deliver() {
         </div>
       </div>
 
-      {/* Confirm Button */}
       <button
         onClick={handleConfirmOrder}
         className="w-full py-3 bg-green-600 text-white rounded hover:bg-green-700 transition"
@@ -163,7 +148,6 @@ export default function Deliver() {
         Confirm Order
       </button>
 
-      {/* Success/Failure Alerts */}
       {orderSuccess && (
         <div className="mt-4 p-4 bg-green-100 text-green-800 rounded flex items-center">
           <CheckCircle className="mr-2" /> Order placed successfully!

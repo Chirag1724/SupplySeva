@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import axios from "axios";
 
 export default function Signup() {
-  const [role, setRole] = useState("vendor");
+  const [role, setRole] = useState("vendor"); // default role
   const [formData, setFormData] = useState({
     name: "",
     businessName: "",
@@ -16,11 +17,55 @@ export default function Signup() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Simulate form submission
-    console.log("Form submitted:", formData);
-    alert("Signup successful! (Demo mode)");
+
+    try {
+      const form = new FormData();
+      form.append("role", role);
+      form.append("name", formData.name);
+      form.append("businessName", formData.businessName);
+      form.append("phone", formData.phone);
+      form.append("password", formData.password);
+      form.append("city", formData.city);
+      form.append("pincode", formData.pincode);
+
+      if (role === "supplier") {
+        form.append("address", formData.address);
+        form.append("fssaiNumber", formData.fssaiNumber);
+        if (formData.fssaiCertificate) {
+          form.append("fssaiCertificate", formData.fssaiCertificate);
+        }
+      }
+
+      const response = await axios.post("http://localhost:5000/api/auth/signup", form, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+
+      alert(response.data.message || "Signup successful!");
+
+      // ✅ Reset form after successful submission
+      setFormData({
+        name: "",
+        businessName: "",
+        phone: "",
+        password: "",
+        city: "",
+        pincode: "",
+        address: "",
+        fssaiNumber: "",
+        fssaiCertificate: null,
+      });
+      setRole("vendor");
+
+      // Optional: redirect to login
+      // window.location.href = "/login";
+    } catch (error) {
+      console.error("Signup error:", error);
+      alert(error.response?.data?.message || "Signup failed. Please try again.");
+    }
   };
+
 
   return (
     <div className="flex min-h-screen bg-gradient-to-br from-green-500 via-green-600 to-green-700">
